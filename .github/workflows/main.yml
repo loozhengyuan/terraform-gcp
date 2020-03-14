@@ -1,0 +1,113 @@
+name: Main Workflow
+
+on:
+  - push
+  - pull_request
+
+env:
+  # GOOGLE_PROJECT: project
+  # GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+  # GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+  # TF_CLI_TOKEN: ${{ secrets.TF_CLI_TOKEN }}
+  TF_CLI_CONFIG_FILE: .terraformrc
+  TF_IN_AUTOMATION: 1
+
+jobs:
+  validate:
+    name: Validate Terraform plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    steps:
+    - name: Checkout branch
+      uses: actions/checkout@v1
+
+    - name: Install Terraform
+      run: |
+        make install
+
+    - name: Initialise Terraform environment
+      run: |
+        terraform init -input=false -backend=false
+
+    - name: Lint Terraform plan
+      run: |
+        make lint
+
+    - name: Validate Terraform plan
+      run: |
+        make validate
+
+  # preview:
+  #   name: Preview Terraform plan
+  #   needs: validate
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 1
+
+  #   steps:
+  #   - name: Checkout branch
+  #     uses: actions/checkout@v1
+
+  #   - name: Install Terraform
+  #     run: |
+  #       make install
+
+  #   - name: Create Terraform CLI config file
+  #     run: |
+  #       cat << EOF > ${TF_CLI_CONFIG_FILE}
+  #       credentials "app.terraform.io" {
+  #         token = "${TF_CLI_TOKEN}"
+  #       }
+  #       EOF
+
+  #   - name: Initialise Terraform environment
+  #     run: |
+  #       echo ${GCP_SERVICE_ACCOUNT} | base64 -d > ${GOOGLE_APPLICATION_CREDENTIALS}
+  #       terraform init -input=false
+    
+  #   - name: Preview Terraform plan
+  #     run: |
+  #       terraform plan -input=false -out=tfplan
+    
+  #   - name: Upload artifact
+  #     uses: actions/upload-artifact@v1
+  #     with:
+  #       name: terraform
+  #       path: tfplan
+
+  # apply:
+  #   name: Apply Terraform plan
+  #   needs: preview
+  #   if: github.ref == 'refs/heads/master'
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 20
+
+  #   steps:
+  #   - name: Checkout branch
+  #     uses: actions/checkout@v1
+
+  #   - name: Install Terraform
+  #     run: |
+  #       make install
+
+  #   - name: Create Terraform CLI config file
+  #     run: |
+  #       cat << EOF > ${TF_CLI_CONFIG_FILE}
+  #       credentials "app.terraform.io" {
+  #         token = "${TF_CLI_TOKEN}"
+  #       }
+  #       EOF
+
+  #   - name: Initialise Terraform environment
+  #     run: |
+  #       echo ${GCP_SERVICE_ACCOUNT} | base64 -d > ${GOOGLE_APPLICATION_CREDENTIALS}
+  #       terraform init -input=false
+
+  #   - name: Download artifact
+  #     uses: actions/download-artifact@v1
+  #     with:
+  #       name: terraform
+    
+  #   - name: Apply Terraform plan
+  #     run: |
+  #       terraform apply -input=false terraform/tfplan
