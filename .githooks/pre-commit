@@ -1,0 +1,12 @@
+#!/bin/bash
+# 
+# Checks Terraform plan before committing
+
+# Ensures that script exits if error is detected
+set -e
+
+# Lint plan
+make lint
+
+# Validate plan
+make validate
