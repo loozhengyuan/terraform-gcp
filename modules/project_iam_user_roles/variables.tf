@@ -3,12 +3,12 @@ variable "project" {
   type        = string
 }
 
-variable "email" {
-  description = "The email of the Google account."
-  type        = string
+variable "users" {
+  description = "The list of valid Google Account email addresses to be associated with the roles."
+  type        = set(string)
 }
 
 variable "roles" {
-  description = "The list of roles to be added to the user."
+  description = "The list of valid Cloud IAM roles to be granted to each user."
   type        = set(string)
 }
