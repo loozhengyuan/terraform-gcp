@@ -13,11 +13,13 @@ resource "kubernetes_namespace" "namespace" {
     labels = {
       managed_by = "terraform"
     }
-    annotations = {
-      "cnrm.cloud.google.com/project-id" = var.project
-      # "cnrm.cloud.google.com/folder-id"
-      # "cnrm.cloud.google.com/organization-id"
-    }
+    # Override annotations are meant to be set a separate namespace
+    # https://cloud.google.com/config-connector/docs/how-to/setting-default-namespace
+    # annotations = {
+    #   "cnrm.cloud.google.com/project-id" = var.project
+    #   # "cnrm.cloud.google.com/folder-id"
+    #   # "cnrm.cloud.google.com/organization-id"
+    # }
   }
 }
 
