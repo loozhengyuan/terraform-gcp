@@ -64,7 +64,7 @@ resource "google_container_node_pool" "node_pool" {
 
   name       = each.value.name
   location   = var.location
-  cluster    = var.name
+  cluster    = google_container_cluster.cluster.name
   node_count = each.value.node_count
 
   autoscaling {
