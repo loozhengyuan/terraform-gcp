@@ -34,12 +34,21 @@ gcloud projects add-iam-policy-binding [PROJECT-ID] \
 ```
 
 #### `roles/resourcemanager.projectIamAdmin`
-_Optional: To set IAM policies on the project.._
+_Optional: To set IAM policies on the project._
 
 ```shell
 gcloud projects add-iam-policy-binding [PROJECT-ID] \
     --member serviceAccount:[SA-NAME]@[PROJECT-ID].iam.gserviceaccount.com \
     --role roles/resourcemanager.projectIamAdmin
+```
+
+#### `roles/iam.serviceAccountAdmin`
+_Optional: To set IAM policies on service accounts._
+
+```shell
+gcloud projects add-iam-policy-binding [PROJECT-ID] \
+    --member serviceAccount:[SA-NAME]@[PROJECT-ID].iam.gserviceaccount.com \
+    --role roles/iam.serviceAccountAdmin
 ```
 
 ### Generating service account key
