@@ -1,4 +1,4 @@
-output "name" {
-  description = "The fully-qualified name of the service account."
-  value       = google_service_account.service_account.name
+output "service_account" {
+  description = "The attributes of the service account."
+  value       = google_service_account.service_account
 }
