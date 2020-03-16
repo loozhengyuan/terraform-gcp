@@ -33,6 +33,7 @@ resource "google_container_cluster" "cluster" {
   ip_allocation_policy {}
 
   # Workload identity
+  # https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable_workload_identity_on_a_new_cluster
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
   }
