@@ -23,25 +23,18 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
-# Create Google Service Account
-resource "google_service_account" "service_account" {
-  provider = google
-  project  = var.project
+# Create Google Service Account and assign IAM roles
+module "google_service_account" {
+  source = "../project_iam_service_account_roles"
 
-  account_id   = "cnrm-system"
-  display_name = "cnrm-system"
-  description  = "Service account for Config Connector."
-}
-
-# Add IAM roles to Google Service Account
-# Grant `roles/editor` for project-level management
-# and `roles/owner` for organisation-level management.
-resource "google_project_iam_member" "iam_roles" {
-  provider = google
-  project  = var.project
-
-  role   = "roles/editor"
-  member = "serviceAccount:${google_service_account.service_account.email}"
+  project     = var.project
+  name        = "cnrm-system"
+  description = "Service account for Config Connector."
+  roles = [
+    # Grant `roles/editor` for project-level management
+    # and `roles/owner` for organisation-level management.  
+    "roles/editor",
+  ]
 }
 
 # Generate Google Service Account Key
@@ -50,7 +43,7 @@ resource "google_service_account_key" "key" {
   # Service account is not a project-level resource
   # project  = var.project
 
-  service_account_id = google_service_account.service_account.name
+  service_account_id = module.google_service_account.service_account.name
 }
 
 # Mount Google Service Account Key as Kubernetes Secret in Namespace
