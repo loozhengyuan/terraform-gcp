@@ -6,15 +6,10 @@ terraform {
   }
 }
 
-locals {
-  ksa_namespace = "cnrm-system" # This CANNOT be changed
-  gsa_name      = "cnrm-system"
-}
-
 # Create Kubernetes namespace
 resource "kubernetes_namespace" "namespace" {
   metadata {
-    name = local.ksa_namespace
+    name = "cnrm-system"
     labels = {
       managed_by = "terraform"
     }
@@ -31,8 +26,8 @@ resource "google_service_account" "service_account" {
   provider = google
   project  = var.project
 
-  account_id   = local.gsa_name
-  display_name = local.gsa_name
+  account_id   = "cnrm-system"
+  display_name = "cnrm-system"
   description  = "Service account for Config Connector."
 }
 
@@ -60,7 +55,7 @@ resource "google_service_account_key" "key" {
 resource "kubernetes_secret" "service_account" {
   metadata {
     name      = "cnrm-system"
-    namespace = local.ksa_namespace
+    namespace = "cnrm-system"
   }
 
   data = {
