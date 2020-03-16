@@ -5,9 +5,11 @@ terraform {
 }
 
 locals {
-  collection_names = [
-    for name in var.names : "${var.collection_prefix}${name}${var.collection_suffix}"
-  ]
+  collection_names = set(
+    [
+      for name in var.names : "${var.collection_prefix}${name}${var.collection_suffix}"
+    ]
+  )
 }
 
 resource "google_bigquery_dataset" "dataset" {
