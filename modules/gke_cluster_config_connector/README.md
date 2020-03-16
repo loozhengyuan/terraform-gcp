@@ -5,6 +5,7 @@
 * This feature [requires partial installation](https://cloud.google.com/config-connector/docs/how-to/install-upgrade-uninstall#installing_kcc) using `kubectl`.
 * This feature should ideally be installed in a [single GKE cluster](https://cloud.google.com/config-connector/docs/concepts/namespaces-and-projects#configuring_your_namespaces) within a project.
 * Use the default `[PROJECT_ID]` Kubernetes namespace or use [override annotations](https://cloud.google.com/config-connector/docs/how-to/setting-default-namespace) to associate a custom Kubernetes namespace with a GCP Project.
+* Across all of your Config Connector-enabled clusters, your namespace names and override annotations should contain no duplicate values.
 
 ## Known Issues
 
