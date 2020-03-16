@@ -5,7 +5,7 @@ terraform {
 }
 
 locals {
-  collection_names = set(
+  collection_names = toset(
     [
       for name in var.names : "${var.collection_prefix}${name}${var.collection_suffix}"
     ]
