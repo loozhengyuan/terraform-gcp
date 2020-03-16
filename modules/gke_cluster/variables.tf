@@ -22,18 +22,22 @@ variable "labels" {
   }
 }
 
-variable "node_pool_name" {
-  description = "The name of the default node pool."
-  type        = string
-}
-
-variable "node_pool_machine_type" {
-  description = "The machine type of the default node pool."
-  type        = string
-}
-
-variable "node_pool_node_count" {
-  description = "The node count of the default node pool."
-  type        = number
-  default     = 1
+variable "node_pools" {
+  description = "The name, machine type, and node count for each node pool"
+  type = map(
+    object(
+      {
+        name         = string
+        machine_type = string
+        node_count   = number
+      }
+    )
+  )
+  default = {
+    default-pool-1 = {
+      name         = "default-pool-1"
+      machine_type = "e2-small"
+      node_count   = 1
+    }
+  }
 }

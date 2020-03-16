@@ -48,10 +48,12 @@ resource "google_container_node_pool" "node_pool" {
   provider = google
   project  = var.project
 
-  name       = var.node_pool_name
+  for_each = var.node_pools
+
+  name       = each.value.name
   location   = var.location
   cluster    = var.name
-  node_count = var.node_pool_node_count
+  node_count = each.value.node_count
 
   autoscaling {
     min_node_count = 1
@@ -65,7 +67,7 @@ resource "google_container_node_pool" "node_pool" {
 
   node_config {
     preemptible  = true
-    machine_type = var.node_pool_machine_type
+    machine_type = each.value.machine_type
 
     labels = var.labels
 
