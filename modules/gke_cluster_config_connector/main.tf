@@ -58,6 +58,9 @@ resource "kubernetes_secret" "service_account" {
   metadata {
     name      = "cnrm-system"
     namespace = "cnrm-system"
+    labels = {
+      managed_by = "terraform"
+    }
   }
 
   data = {
