@@ -11,7 +11,12 @@ variable "name" {
 variable "description" {
   description = "The description for the service account."
   type        = string
-  default     = "Created by Terraform."
+}
+
+variable "description_suffix" {
+  description = "The description suffix for the service account. Defaults to 'Managed by Terraform.'"
+  type        = string
+  default     = "Managed by Terraform."
 }
 
 variable "roles" {

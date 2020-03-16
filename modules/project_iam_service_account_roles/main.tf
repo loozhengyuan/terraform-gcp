@@ -10,7 +10,7 @@ resource "google_service_account" "service_account" {
 
   account_id   = var.name
   display_name = var.name
-  description  = var.description
+  description  = "${var.description} ${var.description_suffix}"
 }
 
 resource "google_project_iam_member" "service_account_role" {
