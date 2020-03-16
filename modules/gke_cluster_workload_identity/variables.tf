@@ -17,3 +17,8 @@ variable "gsa_name" {
   description = "The name of the Google Service Account."
   type        = string
 }
+
+variable "gsa_roles" {
+  description = "The Cloud IAM roles to be granted to the Google Service Account."
+  type        = set(string)
+}
