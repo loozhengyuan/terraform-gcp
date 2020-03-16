@@ -5,6 +5,17 @@ terraform {
   }
 }
 
+# Enable Google Kubernetes API
+resource "google_project_service" "container" {
+  project = var.project
+  service = "container.googleapis.com"
+
+  # Ensures that this resource block will only
+  # be concerned with enabling this API if disabled
+  disable_dependent_services = false
+  disable_on_destroy         = false
+}
+
 resource "google_container_cluster" "cluster" {
   # This resouce contains blocks that requires the google-beta provider
   provider = google-beta
