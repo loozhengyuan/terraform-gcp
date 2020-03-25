@@ -30,7 +30,7 @@ variable "node_pools" {
         name         = string
         machine_type = string
         node_count   = number
-        disk_size_gb = string
+        disk_size_gb = number
       }
     )
   )
@@ -39,7 +39,7 @@ variable "node_pools" {
       name         = "default-pool-1"
       machine_type = "e2-small"
       node_count   = 1
-      disk_size_gb = "100GB"
+      disk_size_gb = 100
     }
   }
 }
