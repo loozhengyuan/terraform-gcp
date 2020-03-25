@@ -63,7 +63,7 @@ resource "google_container_node_pool" "node_pool" {
   for_each = var.node_pools
 
   name       = each.value.name
-  location   = var.location
+  location   = google_container_cluster.cluster.location
   cluster    = google_container_cluster.cluster.name
   node_count = each.value.node_count
 
