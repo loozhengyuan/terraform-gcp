@@ -62,10 +62,12 @@ resource "google_container_node_pool" "node_pool" {
 
   for_each = var.node_pools
 
-  name       = each.value.name
-  location   = var.location
-  cluster    = google_container_cluster.cluster.name
-  node_count = each.value.node_count
+  name         = each.value.name
+  location     = var.location
+  cluster      = google_container_cluster.cluster.name
+  node_count   = each.value.node_count
+  disk_size_gb = each.value.disk_size_gb
+  disk_type    = each.value.disk_type
 
   autoscaling {
     min_node_count = 1

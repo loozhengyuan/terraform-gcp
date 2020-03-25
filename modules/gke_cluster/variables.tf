@@ -23,13 +23,15 @@ variable "labels" {
 }
 
 variable "node_pools" {
-  description = "The name, machine type, and node count for each node pool"
+  description = "The configuration variables for each node pool"
   type = map(
     object(
       {
         name         = string
         machine_type = string
         node_count   = number
+        disk_size_gb = string
+        disk_type    = string
       }
     )
   )
@@ -38,6 +40,8 @@ variable "node_pools" {
       name         = "default-pool-1"
       machine_type = "e2-small"
       node_count   = 1
+      disk_size_gb = "100GB"
+      disk_type    = "pd-standard"
     }
   }
 }
