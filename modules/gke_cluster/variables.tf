@@ -27,7 +27,6 @@ variable "node_pools" {
   type = map(
     object(
       {
-        name         = string
         machine_type = string
         node_count   = number
         disk_size_gb = number
@@ -35,8 +34,7 @@ variable "node_pools" {
     )
   )
   default = {
-    default-pool-1 = {
-      name         = "default-pool-1"
+    default-pool = {
       machine_type = "e2-small"
       node_count   = 1
       disk_size_gb = 100
