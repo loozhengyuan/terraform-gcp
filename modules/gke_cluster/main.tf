@@ -81,7 +81,6 @@ resource "google_container_node_pool" "node_pool" {
     preemptible  = true
     machine_type = each.value.machine_type
     disk_size_gb = each.value.disk_size_gb
-    disk_type    = each.value.disk_type
 
     labels = var.labels
 
