@@ -63,27 +63,7 @@ resource "google_storage_bucket" "bucket" {
     }
   }
 
-  # Move current and noncurrent objects to NEARLINE
-  # if created more than 30 days ago
-  lifecycle_rule {
-    action {
-      type          = "SetStorageClass"
-      storage_class = "NEARLINE"
-    }
-    condition {
-      age = 30
-    }
-  }
-
-  # Move current and noncurrent objects to COLDLINE
-  # if created more than 30 days ago
-  lifecycle_rule {
-    action {
-      type          = "SetStorageClass"
-      storage_class = "COLDLINE"
-    }
-    condition {
-      age = 90
-    }
-  }
+  # NOTE: Lifecycle policies for setting storage classes were
+  # removed because the retrieval patterns and associated costs
+  # make the 'archival' storage classes a more costly option.
 }
