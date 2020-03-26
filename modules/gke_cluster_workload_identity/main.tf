@@ -38,7 +38,6 @@ module "google_service_account" {
 }
 
 # Create Kubernetes Service Account in Namespace
-# Add annotation for KSA-GSA binding
 resource "kubernetes_service_account" "service_account" {
   metadata {
     name      = var.ksa_name
@@ -46,6 +45,7 @@ resource "kubernetes_service_account" "service_account" {
     labels = {
       managed_by = "terraform"
     }
+    # Add annotation for KSA-GSA binding
     annotations = {
       "iam.gke.io/gcp-service-account" = module.google_service_account.service_account.email
     }
