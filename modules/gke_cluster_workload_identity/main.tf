@@ -17,16 +17,6 @@ resource "google_project_service" "container" {
   disable_on_destroy         = false
 }
 
-# Create Kubernetes namespace
-resource "kubernetes_namespace" "namespace" {
-  metadata {
-    name = var.namespace
-    labels = {
-      managed_by = "terraform"
-    }
-  }
-}
-
 # Create Kubernetes Service Account in Namespace
 resource "kubernetes_service_account" "service_account" {
   metadata {

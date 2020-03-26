@@ -2,8 +2,9 @@
 
 ## Notes
 
-* Input variable `gsa_name` should be unique within a project.
-* Input variable `namespace` and `ksa_name` [should be unique within a workload identity pool](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#sharing_identities_across_clusters) (which is a project-level resource).
+* This Workload Identity KSA-GSA binding is project-scoped, cluster-agnostic mapping, i.e. the binding is [valid across clusters as long as the KSA matches](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#sharing_identities_across_clusters) the following identifier: `serviceAccount:GCP_PROJECT.svc.id.goog[K8S_NAMESPACE/KSA_NAME]`. As such, it is helpful if input variables `namespace` and `ksa_name` is unique within the workload identity pool.
+* Input variable `namespace` expects an already-created Kubernetes namespace.
+* Input variable `gsa_name` and `gsa_email` should reference an existing GSA resource.
 
 ## Known Issues
 
