@@ -27,16 +27,6 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
-# Create Google Service Account and assign IAM roles
-module "google_service_account" {
-  source = "../project_iam_service_account_roles"
-
-  project     = var.project
-  name        = var.gsa_name
-  description = "Service account for Workload Identity (${var.project}.svc.id.goog[${var.namespace}/${var.ksa_name}])."
-  roles       = var.gsa_roles
-}
-
 # Create Kubernetes Service Account in Namespace
 resource "kubernetes_service_account" "service_account" {
   metadata {
@@ -47,14 +37,14 @@ resource "kubernetes_service_account" "service_account" {
     }
     # Add annotation for KSA-GSA binding
     annotations = {
-      "iam.gke.io/gcp-service-account" = module.google_service_account.service_account.email
+      "iam.gke.io/gcp-service-account" = var.gsa_email
     }
   }
 }
 
 # Bind KSA to GSA via IAM
 resource "google_service_account_iam_member" "gsa_ksa_iam_policy_binding" {
-  service_account_id = module.google_service_account.service_account.name
+  service_account_id = var.gsa_name
 
   role   = "roles/iam.workloadIdentityUser"
   member = "serviceAccount:${var.project}.svc.id.goog[${var.namespace}/${var.ksa_name}]"
