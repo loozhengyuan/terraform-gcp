@@ -47,6 +47,7 @@ resource "google_storage_bucket" "bucket" {
     managed_by = "terraform"
   }
 
+  # Enable object versioning
   versioning {
     enabled = true
   }
@@ -62,6 +63,8 @@ resource "google_storage_bucket" "bucket" {
     }
   }
 
+  # Move current and noncurrent objects to NEARLINE
+  # if created more than 30 days ago
   lifecycle_rule {
     action {
       type          = "SetStorageClass"
@@ -72,6 +75,8 @@ resource "google_storage_bucket" "bucket" {
     }
   }
 
+  # Move current and noncurrent objects to COLDLINE
+  # if created more than 30 days ago
   lifecycle_rule {
     action {
       type          = "SetStorageClass"
