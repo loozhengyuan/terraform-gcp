@@ -51,6 +51,17 @@ resource "google_storage_bucket" "bucket" {
     enabled = true
   }
 
+  # Delete noncurrent objects if created more than 14 days ago
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+    condition {
+      age        = 14
+      with_state = "ARCHIVED"
+    }
+  }
+
   lifecycle_rule {
     action {
       type          = "SetStorageClass"
