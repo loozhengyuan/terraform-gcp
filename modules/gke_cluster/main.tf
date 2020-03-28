@@ -16,6 +16,22 @@ resource "google_project_service" "container" {
   disable_on_destroy         = false
 }
 
+# Create Google Service Account for GKE cluster and nodes
+module "google_service_account" {
+  source = "github.com/loozhengyuan/terraform-gcp.git//modules/project_iam_service_account_roles?ref=481af8c"
+
+  project     = var.project
+  name        = "gke-default-${var.name}"
+  description = "Service account for Google Kubernetes Engine cluster nodes."
+  roles = [
+    # Minimum roles needed by GKE
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter",
+    "roles/monitoring.viewer",
+  ]
+}
+
 resource "google_container_cluster" "cluster" {
   # This resource contains blocks that requires the google-beta provider
   provider = google-beta
@@ -98,8 +114,23 @@ resource "google_container_node_pool" "node_pool" {
     preemptible  = true
     machine_type = each.value.machine_type
     disk_size_gb = each.value.disk_size_gb
+    # Best Practice: Limit default access scopes for essential access only
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa
+    service_account = module.google_service_account.service_account.email
 
     # SECURITY CONFIGURATION
+    # NOTE: Access scopes are legacy ways of granting privileges to nodes
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/access-scopes
+    # The following oauth scopes references the `gke-default` alias
+    # https://cloud.google.com/sdk/gcloud/reference/container/node-pools/create#--scopes
+    # oauth_scopes = [
+    #   "https://www.googleapis.com/auth/devstorage.read_only",
+    #   "https://www.googleapis.com/auth/logging.write",
+    #   "https://www.googleapis.com/auth/monitoring",
+    #   "https://www.googleapis.com/auth/service.management.readonly",
+    #   "https://www.googleapis.com/auth/servicecontrol",
+    #   "https://www.googleapis.com/auth/trace.append",
+    # ]
     shielded_instance_config {
       enable_secure_boot          = true
       enable_integrity_monitoring = true
@@ -114,16 +145,5 @@ resource "google_container_node_pool" "node_pool" {
     metadata = {
       disable-legacy-endpoints = "true"
     }
-
-    # The following oauth scopes references the `gke-default` alias
-    # https://cloud.google.com/sdk/gcloud/reference/container/node-pools/create#--scopes
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-      "https://www.googleapis.com/auth/service.management.readonly",
-      "https://www.googleapis.com/auth/servicecontrol",
-      "https://www.googleapis.com/auth/trace.append",
-    ]
   }
 }
