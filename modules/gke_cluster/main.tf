@@ -83,6 +83,13 @@ resource "google_container_node_pool" "node_pool" {
     auto_repair  = true
     auto_upgrade = true
   }
+  # The maximum simultaneous node upgrade is the sum
+  # of the following numbers
+  # https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-upgrades#surge
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
 
   # NODE CONFIGURATION
   node_config {
