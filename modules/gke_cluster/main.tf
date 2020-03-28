@@ -17,22 +17,20 @@ resource "google_project_service" "container" {
 }
 
 resource "google_container_cluster" "cluster" {
-  # This resouce contains blocks that requires the google-beta provider
+  # This resource contains blocks that requires the google-beta provider
   provider = google-beta
   project  = var.project
 
+  # BASIC CONFIGURATION
   name = var.name
-
-  # Zonal cluster, though not recommended, requires lesser nodes
+  # Zonal clusters are cheaper than regional ones but is less available
+  # https://cloud.google.com/kubernetes-engine/pricing
   location = var.location
-
-  resource_labels = var.labels
-
-  # Requires `google-beta` provider
   release_channel {
     channel = "REGULAR"
   }
 
+  # AUTOMATION CONFIGURATION
   # The time is in UTC format, which translates to 02:00SGT
   maintenance_policy {
     daily_maintenance_window {
@@ -40,14 +38,21 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
+  # NETWORKING CONFIGURATION
   # Enable VPC-native cluster
   ip_allocation_policy {}
 
+  # SECURITY CONFIGURATION
   # Workload identity
   # https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable_workload_identity_on_a_new_cluster
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
   }
+
+  # METADATA CONFIGURATION
+  resource_labels = var.labels
+
+  # FEATURE CONFIGURATION
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -57,38 +62,42 @@ resource "google_container_cluster" "cluster" {
 }
 
 resource "google_container_node_pool" "node_pool" {
-  provider = google
+  # This resource contains blocks that requires the google-beta provider
+  provider = google-beta
   project  = var.project
 
   for_each = var.node_pools
 
+  # BASIC CONFIGURATION
   name       = each.key
   location   = google_container_cluster.cluster.location
   cluster    = google_container_cluster.cluster.name
   node_count = each.value.node_count
-
   autoscaling {
     min_node_count = 1
     max_node_count = 30
   }
-
   management {
     auto_repair  = true
     auto_upgrade = true
   }
 
+  # NODE CONFIGURATION
   node_config {
+
+    # MACHINE CONFIGURATION
     preemptible  = true
     machine_type = each.value.machine_type
     disk_size_gb = each.value.disk_size_gb
 
-    labels = var.labels
-
+    # SECURITY CONFIGURATION
     shielded_instance_config {
       enable_secure_boot          = true
       enable_integrity_monitoring = true
     }
 
+    # METADATA CONFIGURATION
+    labels = var.labels
     # From GKE 1.12 onwards, disable-legacy-endpoints is set to 
     # true by the API; if metadata is set but that default value 
     # is not included, Terraform will attempt to unset the value.
