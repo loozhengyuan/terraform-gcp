@@ -64,6 +64,9 @@ resource "google_container_cluster" "cluster" {
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
   }
+  # Enable Binary Authorization
+  # https://cloud.google.com/binary-authorization
+  enable_binary_authorization = true
 
   # METADATA CONFIGURATION
   resource_labels = var.labels
