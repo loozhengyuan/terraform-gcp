@@ -33,6 +33,15 @@ gcloud projects add-iam-policy-binding [PROJECT-ID] \
     --role roles/editor
 ```
 
+#### `roles/iam.securityAdmin`
+_To manage IAM policies for just about every resource within the project._
+
+```shell
+gcloud projects add-iam-policy-binding [PROJECT-ID] \
+    --member serviceAccount:[SA-NAME]@[PROJECT-ID].iam.gserviceaccount.com \
+    --role roles/iam.securityAdmin
+```
+
 #### `roles/resourcemanager.projectIamAdmin`
 _Optional: To set IAM policies on the project._
 
