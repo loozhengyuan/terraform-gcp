@@ -64,6 +64,12 @@ resource "google_container_cluster" "cluster" {
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
   }
+  # Enable Application-layer Secrets Encryption
+  # https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets
+  database_encryption {
+    state    = var.database_encryption_key == "" ? "DECRYPTED" : "ENCRYPTED"
+    key_name = var.database_encryption_key == "" ? "" : var.database_encryption_key
+  }
   # Enable Shielded GKE nodes
   # https://cloud.google.com/kubernetes-engine/docs/how-to/shielded-gke-nodes
   enable_shielded_nodes = true

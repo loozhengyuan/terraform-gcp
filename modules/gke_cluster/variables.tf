@@ -22,6 +22,12 @@ variable "labels" {
   }
 }
 
+variable "database_encryption_key" {
+  description = "The fully-qualified name of Cloud KMS key."
+  type        = string
+  default     = ""
+}
+
 variable "node_pools" {
   description = "The configuration variables for each node pool"
   type = map(
