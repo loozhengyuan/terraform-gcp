@@ -69,10 +69,12 @@ resource "google_container_node_pool" "node_pool" {
   for_each = var.node_pools
 
   # BASIC CONFIGURATION
-  name       = each.key
-  location   = google_container_cluster.cluster.location
-  cluster    = google_container_cluster.cluster.name
-  node_count = each.value.node_count
+  name     = each.key
+  location = google_container_cluster.cluster.location
+  cluster  = google_container_cluster.cluster.name
+  # Attribute node_count cannot be used together with autoscaling
+  # node_count = each.value.node_count
+  initial_node_count = 1
   autoscaling {
     min_node_count = 1
     max_node_count = 30
