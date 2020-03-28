@@ -29,6 +29,8 @@ variable "node_pools" {
       {
         machine_type = string
         disk_size_gb = number
+        min_nodes    = number
+        max_nodes    = number
       }
     )
   )
@@ -36,6 +38,8 @@ variable "node_pools" {
     default-pool = {
       machine_type = "e2-small"
       disk_size_gb = 100
+      min_nodes    = 1
+      max_nodes    = 10
     }
   }
 }

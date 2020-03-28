@@ -76,8 +76,8 @@ resource "google_container_node_pool" "node_pool" {
   # node_count = each.value.node_count
   initial_node_count = 1
   autoscaling {
-    min_node_count = 1
-    max_node_count = 30
+    min_node_count = each.value.min_nodes
+    max_node_count = each.value.max_nodes
   }
   management {
     auto_repair  = true
