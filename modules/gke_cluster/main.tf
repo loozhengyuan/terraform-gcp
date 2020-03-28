@@ -147,6 +147,14 @@ resource "google_container_node_pool" "node_pool" {
       enable_secure_boot          = true
       enable_integrity_monitoring = true
     }
+    # Expose node metadata on node pool
+    # NOTE: Required for Workload Identity
+    # FIXME: This block needs to be explicitly defined
+    # to avoid replacements due to a reported bug:
+    # https://github.com/terraform-providers/terraform-provider-google/issues/5937
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
 
     # METADATA CONFIGURATION
     labels = var.labels
