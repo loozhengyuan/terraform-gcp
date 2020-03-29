@@ -30,6 +30,8 @@ module "google_service_account" {
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
+    # Optional: To pull private images from Google Container Registry
+    "roles/storage.objectViewer",
   ]
 }
 
