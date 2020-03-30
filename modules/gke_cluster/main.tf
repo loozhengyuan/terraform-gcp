@@ -19,7 +19,7 @@ resource "google_project_service" "container" {
 # Create custom Google Service Account for GKE cluster and nodes for better security
 # https://cloud.google.com/kubernetes-engine/docs/how-to/protecting-cluster-metadata
 module "google_service_account" {
-  source = "github.com/loozhengyuan/terraform-gcp.git//modules/project_iam_service_account_roles?ref=481af8c"
+  source = "./project_iam_service_account_roles"
 
   project     = var.project
   name        = "gke-default-${var.name}"
