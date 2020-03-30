@@ -18,6 +18,7 @@ resource "google_project_service" "container" {
 
 # Create custom Google Service Account for GKE cluster and nodes for better security
 # https://cloud.google.com/kubernetes-engine/docs/how-to/protecting-cluster-metadata
+# https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa
 module "google_service_account" {
   source = "../project_iam_service_account_roles"
 
@@ -26,12 +27,16 @@ module "google_service_account" {
   description = "Service account for Google Kubernetes Engine cluster nodes."
   roles = [
     # Minimum roles needed by GKE
-    # https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/access-scopes#minimal
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
     # Optional: To pull private images from Google Container Registry
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/access-scopes#additional_roles
     "roles/storage.objectViewer",
+    # Optional: To access underlying Compute Engine nodes
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/access-scopes#additional_roles
+    # "roles/compute.admin",
   ]
 }
 
@@ -134,18 +139,21 @@ resource "google_container_node_pool" "node_pool" {
     service_account = module.google_service_account.service_account.email
 
     # SECURITY CONFIGURATION
-    # NOTE: Access scopes are legacy ways of granting privileges to nodes
+    # NOTE: Access scopes may be the legacy way of granting extra privileges
+    # but they are still required for some cluster-level operations.
     # https://cloud.google.com/kubernetes-engine/docs/how-to/access-scopes
-    # The following oauth scopes references the `gke-default` alias
-    # https://cloud.google.com/sdk/gcloud/reference/container/node-pools/create#--scopes
-    # oauth_scopes = [
-    #   "https://www.googleapis.com/auth/devstorage.read_only",
-    #   "https://www.googleapis.com/auth/logging.write",
-    #   "https://www.googleapis.com/auth/monitoring",
-    #   "https://www.googleapis.com/auth/service.management.readonly",
-    #   "https://www.googleapis.com/auth/servicecontrol",
-    #   "https://www.googleapis.com/auth/trace.append",
-    # ]
+    oauth_scopes = [
+      # For pulling private images from Container Registry
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      # For logging and monitoring; usually included
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      # Other remaining access scopes from the `gke-default` alias
+      # https://cloud.google.com/sdk/gcloud/reference/container/node-pools/create#--scopes
+      # "https://www.googleapis.com/auth/service.management.readonly",
+      # "https://www.googleapis.com/auth/servicecontrol",
+      # "https://www.googleapis.com/auth/trace.append",
+    ]
     shielded_instance_config {
       enable_secure_boot          = true
       enable_integrity_monitoring = true
