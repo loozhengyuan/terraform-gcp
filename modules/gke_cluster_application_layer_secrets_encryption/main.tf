@@ -6,7 +6,7 @@ terraform {
 
 locals {
   keyring_name = "gke-encryption-keys"
-  key_name     = "${var.cluster}-kek"
+  key_name     = "${var.name}-kek"
 }
 
 data "google_project" "project" {
