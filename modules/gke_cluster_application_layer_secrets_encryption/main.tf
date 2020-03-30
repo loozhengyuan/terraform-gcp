@@ -20,7 +20,7 @@ module "kms_keys" {
   location = var.location # Must be same region as cluster
   keyring  = local.keyring_name
   keys = {
-    local.key_name = {
+    "${local.key_name}" = {
       # Symmetric encryption keys
       purpose    = "ENCRYPT_DECRYPT"
       algorithm  = "GOOGLE_SYMMETRIC_ENCRYPTION"
